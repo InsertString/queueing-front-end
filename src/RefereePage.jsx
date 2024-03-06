@@ -15,11 +15,13 @@ const RefereePage = () => {
   );
 
   const [violations, setViolations] = useState([]);
+  const [index, setIndex] = useState([]);
 
   const [formData, setFormData] = useState({
     team: "",
     rule: "",
     sev: "",
+    index: "",
   });
 
   useEffect(() => {
@@ -41,8 +43,6 @@ const RefereePage = () => {
 
   // when the submit button is pressed
   const onSubmit = async (e) => {
-    // prevent reload of the browser
-    e.preventDefault();
     // prompt for confirmation
     if (
       window.confirm(
@@ -65,6 +65,20 @@ const RefereePage = () => {
         },
       });
     }
+  };
+
+  const changeIndex = (e) => {
+    console.log(e.target.value);
+    setFormData({ ...formData, index: e.target.value });
+    while (index.length > 0) {
+      index.pop();
+    }
+    violations.map((team) => {
+      if (team.number === e.target.value) {
+        //console.log(formData.index);
+        index.push(team);
+      }
+    });
   };
 
   return (
@@ -120,17 +134,42 @@ const RefereePage = () => {
           </button>
         </div>
       </form>
+      <form>
+        <div className="flex flex-col items-center">
+          <h1 className="text-xl mb-2 font-bold"> View Violations </h1>
+          <select
+            className="select select-bordered w-full"
+            onChange={changeIndex}
+            defaultValue="Team"
+          >
+            <option disabled selected>
+              Team
+            </option>
+            <option>All</option>
+            {teams.map((team) => {
+              return <option value={team.number}>{team.number}</option>;
+            })}
+          </select>
+          <ol className="list">
+            {index.map((team) => (
+              <li>
+                {team.number} {team.ruleId} {team.severity}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </form>
       <div className="flex flex-col items-center"></div>
-      <label className="text-xl mb-2 font-bold">Veiw Violations</label>
-      <ol className="list">
-        {violations.map((team) => (
-          <li>
-            {team.number} {team.ruleId} {team.severity}
-          </li>
-        ))}
-      </ol>
     </div>
   );
 };
 
 export default RefereePage;
+
+/*
+      <label className="text-xl mb-2 font-bold">Veiw Violations</label>
+<ol className="list">
+        
+      </ol>
+
+*/
