@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import useWebSocket from 'react-use-websocket';
-import { ENDPOINT, WEBSOCKET_ENDPOINT } from './constants';
+import React, { useEffect, useState } from "react";
+import useWebSocket from "react-use-websocket";
+import { ENDPOINT, WEBSOCKET_ENDPOINT } from "./constants";
 
 const KioskPage = () => {
   const [teams, setTeams] = useState([]);
   const { lastJsonMessage: data } = useWebSocket(
     `${WEBSOCKET_ENDPOINT}/queue`,
     {
-      shouldReconnect: () => true
+      shouldReconnect: () => true,
     }
   );
   const [queued, setQueued] = useState([]);
@@ -25,7 +25,7 @@ const KioskPage = () => {
     if (data) {
       setQueued([
         ...data.nowServing.map((t) => t.number),
-        ...data.queue.map((t) => t.number)
+        ...data.queue.map((t) => t.number),
       ]);
     }
   }, [data]);
@@ -33,11 +33,11 @@ const KioskPage = () => {
   const handleClick = async (team) => {
     if (window.confirm(`Add team ${team} to the queue?`)) {
       const res = await fetch(`${ENDPOINT}/add`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ team }),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
       if (res.status !== 200) {
         window.alert(`${team} is already in queue`);
@@ -47,8 +47,9 @@ const KioskPage = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <p className="text-xl mb-2 font-bold">Join the queue</p>
+      <p className="text-xl mb-2 font-bold"> Join the queue </p>{" "}
       <div className="flex flex-row flex-wrap w-full items-center">
+        {" "}
         {teams.map((t) => (
           <div className="px-1 py-2 w-28" key={t.number}>
             <button
@@ -56,11 +57,11 @@ const KioskPage = () => {
               disabled={queued.includes(t.number)}
               onClick={() => handleClick(t.number)}
             >
-              {t.number}
-            </button>
+              {t.number}{" "}
+            </button>{" "}
           </div>
-        ))}
-      </div>
+        ))}{" "}
+      </div>{" "}
     </div>
   );
 };

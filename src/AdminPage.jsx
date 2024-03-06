@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import useWebSocket from 'react-use-websocket';
-import ReactTimeAgo from 'react-time-ago';
+import React, { useEffect, useState } from "react";
+import useWebSocket from "react-use-websocket";
+import ReactTimeAgo from "react-time-ago";
 
-import { WEBSOCKET_ENDPOINT, ENDPOINT } from './constants';
+import { WEBSOCKET_ENDPOINT, ENDPOINT } from "./constants";
 
 const AdminPage = () => {
   const [queue, setQueue] = useState([]);
@@ -10,31 +10,31 @@ const AdminPage = () => {
   const { lastJsonMessage: data } = useWebSocket(
     `${WEBSOCKET_ENDPOINT}/queue`,
     {
-      shouldReconnect: () => true
+      shouldReconnect: () => true,
     }
   );
 
   const handleNext = async () => {
-    await fetch(`${ENDPOINT}/serve`, { method: 'POST' });
+    await fetch(`${ENDPOINT}/serve`, { method: "POST" });
   };
 
   const handleRemove = async (team) => {
     await fetch(`${ENDPOINT}/remove`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ team }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
   };
 
   const handleBack = async (team) => {
     await fetch(`${ENDPOINT}/unserve`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ team }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
   };
 
@@ -47,15 +47,15 @@ const AdminPage = () => {
 
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Backspace') {
+      if (e.key === "Backspace") {
         handleNext();
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
 
@@ -69,10 +69,9 @@ const AdminPage = () => {
         >
           Add team to Up Next (⌫)
         </button>
-
         <div
           className="text-2xl font-bold p-4"
-          style={{ backgroundColor: '#db0f00' }}
+          style={{ backgroundColor: "#db0f00" }}
         >
           {nowServing.map((team, index) => (
             <p key={index} className="mb-1">

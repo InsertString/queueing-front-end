@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import useWebSocket from 'react-use-websocket';
-import ReactTimeAgo from 'react-time-ago';
+import React, { useEffect, useState } from "react";
+import useWebSocket from "react-use-websocket";
+import ReactTimeAgo from "react-time-ago";
 
-import { WEBSOCKET_ENDPOINT } from './constants';
+import { WEBSOCKET_ENDPOINT } from "./constants";
 
 const QueuePage = () => {
   const [queue, setQueue] = useState([]);
@@ -11,7 +11,7 @@ const QueuePage = () => {
   const { lastJsonMessage: data } = useWebSocket(
     `${WEBSOCKET_ENDPOINT}/queue`,
     {
-      shouldReconnect: () => true
+      shouldReconnect: () => true,
     }
   );
 
@@ -41,29 +41,31 @@ const QueuePage = () => {
   return (
     <div className="flex flex-row space-x-12 max-h-[90vh]">
       <div className="w-[400px]">
-        <p className="text-4xl font-bold mb-4">Up Next</p>
+        <p className="text-4xl font-bold mb-4"> Up Next </p>{" "}
         <div
           className="text-5xl font-bold p-4"
-          style={{ backgroundColor: flash ? 'transparent' : '#db0f00' }}
+          style={{ backgroundColor: flash ? "transparent" : "#db0f00" }}
         >
+          {" "}
           {nowServing.map((team, index) => (
             <p key={index} className="mb-1">
               <div className="flex flex-row">
-                <div className="w-56">{team.number}</div>
+                <div className="w-56"> {team.number} </div>{" "}
                 <ReactTimeAgo date={team.at} locale="en-US" timeStyle="mini" />
-              </div>
+              </div>{" "}
             </p>
-          ))}
-        </div>
-      </div>
+          ))}{" "}
+        </div>{" "}
+      </div>{" "}
       <div className="w-3/4">
-        <p className="text-4xl font-bold mb-4">Current Queue</p>
+        <p className="text-4xl font-bold mb-4"> Current Queue </p>{" "}
         <ol className="list-decimal text-3xl columns-3 px-8">
+          {" "}
           {queue.map((team, index) => (
-            <li key={index}>{team.number}</li>
-          ))}
-        </ol>
-      </div>
+            <li key={index}> {team.number} </li>
+          ))}{" "}
+        </ol>{" "}
+      </div>{" "}
     </div>
   );
 };
