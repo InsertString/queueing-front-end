@@ -48,12 +48,11 @@ const RefereePage = () => {
   );
 
   const [violations, setViolations] = useState([]);
-  const [uniques, setUniques] = useState([]);
 
   const [formData, setFormData] = useState({
     team: "",
     rule: "",
-    sev: "",
+    sev: "Minor",
     index: "All",
   });
 
@@ -142,10 +141,12 @@ const RefereePage = () => {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex flex-col space-y-10">
+      <div>
         <form onSubmit={onSubmit}>
-          <h1 className="text-xl mb-2 font-bold"> Add Violations </h1>
-          <div>
+          <div className="flex flex-col space-y-4 justify-center">
+            <div className="divider divider-error text-xl mb-2 font-bold">
+              Add Violations
+            </div>
             <select
               className="select select-bordered w-full"
               onChange={(e) =>
@@ -153,64 +154,56 @@ const RefereePage = () => {
               }
               defaultValue="Team"
             >
-              <option disabled selected>
-                Team
-              </option>
+              <option disabled>Team</option>
               {teams.map((team) => {
                 return <option value={team.number}> {team.number} </option>;
               })}
             </select>
-          </div>
-          <div>
-            <select
-              className="select select-bordered w-full"
-              onChange={(e) =>
-                setFormData({ ...formData, rule: e.target.value })
-              }
-              defaultValue="Rule"
-            >
-              <option disabled selected>
-                Rule
-              </option>
-              {RULES.map((rule) => {
-                return <option value={rule.ruleId}> {rule.ruleId} </option>;
-              })}
-            </select>
-          </div>
-          <div>
-            <select
-              className="select select-bordered w-full"
-              onChange={(e) =>
-                setFormData({ ...formData, sev: e.target.value })
-              }
-              defaultValue="Severity"
-            >
-              <option disabled selected>
-                Severity
-              </option>
-              <option value="Minor"> Minor </option>;
-              <option value="Major"> Major </option>;
-            </select>
-          </div>
-          <div>
-            <button
-              className="btn btn-primary"
-              type="submit"
-              disabled={
-                formData.team === "" ||
-                formData.rule === "" ||
-                formData.sev === ""
-              }
-            >
-              Submit
-            </button>
+            <div className="flex flex-row space-x-4">
+              <select
+                className="select select-bordered w-full"
+                onChange={(e) =>
+                  setFormData({ ...formData, rule: e.target.value })
+                }
+                defaultValue="Rule"
+              >
+                <option disabled>Rule</option>
+                {RULES.map((rule) => {
+                  return <option value={rule.ruleId}> {rule.ruleId} </option>;
+                })}
+              </select>
+              <select
+                className="select select-bordered w-full"
+                onChange={(e) =>
+                  setFormData({ ...formData, sev: e.target.value })
+                }
+                defaultValue="Minor"
+              >
+                <option disabled>Severity</option>
+                <option value="Minor"> Minor </option>;
+                <option value="Major"> Major </option>;
+              </select>
+              <button
+                className="btn btn-error btn-outline"
+                type="submit"
+                disabled={
+                  formData.team === "" ||
+                  formData.rule === "" ||
+                  formData.sev === ""
+                }
+              >
+                Add
+              </button>
+            </div>
           </div>
         </form>
       </div>
       <div>
         <form>
-          <h1 className="text-xl mb-2 font-bold"> Violations By Team </h1>
-          <div className="flex flex-row">
+          <div className="flex flex-col space-y-4 justify-center">
+            <div className="divider divider-error text-xl mb-2 font-bold">
+              View Violations
+            </div>
             <select
               className="select select-bordered w-full"
               onChange={displayTable}
@@ -227,12 +220,13 @@ const RefereePage = () => {
             </select>
           </div>
         </form>
-      </div>
-      <div className="overflow-x-auto">
         <table className="table">
           <thead>
             <tr>
-              <th> Team </th> <th> Violation </th>
+              <th>Team</th>
+              <th>Rule</th>
+              <th>Type</th>
+              <th>Remove</th>
             </tr>
           </thead>
           <tbody hidden={formData.index == "All"}>
@@ -240,58 +234,60 @@ const RefereePage = () => {
               .filter((t) => t.number === formData.index)
               .map((team) => (
                 <tr>
-                  <td> {team.number} </td> <td> {team.ruleId} </td>
-                  <td> {team.severity} </td>
-                  <button
-                    className="btn btn-square btn-outline btn-error"
-                    onClick={() =>
-                      RemoveViolation(team.number, team.ruleId, team.severity)
-                    }
+                  <td>
+                    <b>{team.number}</b>
+                  </td>
+                  <td>
+                    <b>{team.ruleId}</b>
+                  </td>
+                  <td
+                    style={{
+                      color: team.severity === "Major" ? "#de6057" : "#ebb31a",
+                    }}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
+                    <b>{team.severity}</b>
+                  </td>
+
+                  <td>
+                    <button
+                      className="btn btn-square btn-outline btn-error btn-sm"
+                      onClick={() =>
+                        RemoveViolation(team.number, team.ruleId, team.severity)
+                      }
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                      ✖
+                    </button>
+                  </td>
                 </tr>
               ))}
           </tbody>
           <tbody hidden={formData.index !== "All"}>
             {violations.map((team) => (
               <tr>
-                <td> {team.number} </td> <td> {team.ruleId} </td>
-                <td> {team.severity} </td>
-                <button
-                  className="btn btn-square btn-outline btn-error"
-                  onClick={() =>
-                    RemoveViolation(team.number, team.ruleId, team.severity)
-                  }
+                <td>
+                  <b>{team.number}</b>
+                </td>
+                <td>
+                  <b>{team.ruleId}</b>
+                </td>
+                <td
+                  style={{
+                    color: team.severity === "Major" ? "#de6057" : "#ebb31a",
+                  }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+                  <b>{team.severity}</b>
+                </td>
+                <td>
+                  <button
+                    className="btn btn-square btn-outline btn-error btn-sm"
+                    onClick={() =>
+                      RemoveViolation(team.number, team.ruleId, team.severity)
+                    }
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
+                    {" "}
+                    ✖
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
