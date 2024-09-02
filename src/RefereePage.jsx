@@ -139,6 +139,9 @@ const RefereePage = () => {
     }
   };
 
+  const badTeams = new Set(violations.map((violation) => violation.number));
+  console.log(teams);
+
   return (
     <div className="flex flex-col space-y-4">
       <div>
@@ -210,12 +213,8 @@ const RefereePage = () => {
               defaultValue="All"
             >
               <option> All </option>
-              {teams.map((team) => {
-                if (
-                  violations.filter((t) => t.number === team.number).length > 0
-                ) {
-                  return <option value={team.number}>{team.number}</option>;
-                }
+              {[...badTeams].map((teamNumber) => {
+                return <option value={teamNumber}>{teamNumber}</option>;
               })}
             </select>
           </div>
